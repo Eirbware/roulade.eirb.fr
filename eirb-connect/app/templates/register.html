@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <form method="POST" action="/register/{{encrypted_service}}/{{token}}" class="form">
+
+
+        <h1 class="form-title">Créer un compte EirbConnect</h1>
+
+
+        <div class="form-group infos-group">
+
+            <h1>Mes Informations</h1>
+
+            <p>
+                Vous allez vous connecter en tant que <span class="nom_complet">{{ cas_user.attributes.nom_complet
+                    }}</span>.
+                <br>
+                Les données suivantes seront enregistrées dans votre compte EirbConnect et mises à jour à chaque
+                connexion avec le CAS.
+            </p>
+
+            <h2>Informations récupérées depuis le CAS :</h2>
+
+            <ul>
+                <li><b>Nom :</b> {{cas_user.attributes.nom}}</li>
+                <li><b>Prénom :</b> {{cas_user.attributes.prenom}}</li>
+                <li><b>Courriel :</b> {{cas_user.attributes.courriel}}</li>
+                <li><b>Profil:</b> {{cas_user.attributes.profil}}</li>
+                <li><b>École:</b> {{cas_user.attributes.ecole}}</li>
+                <li><b>Diplome :</b> {{cas_user.attributes.diplome}}</li>
+            </ul>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <h1>Informations supplémentaires</h1>
+
+
+            <p>
+                Ces informations vous permettront d'accéder à votre compte EirbConnect après la suppression de votre
+                compte CAS.
+            </p>
+
+            <div class="input-group">
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <label for="password">Mot de passe :</label>
+                <span class="helper-text">Votre mot de passe doit contenir au moins 8 caractères et être différent de
+                    votre mot
+                    de passe CAS</span>
+                <input type="password" id="password" name="password" required><br><br>
+            </div>
+
+
+            <button type="submit" class="btn-full">Créer un compte</button>
+        </div>
+
+        <hr>
+
+        <div class="form-group">
+            <h1>Vous avez dejà un compte ?</h1>
+
+            <a href="/login">
+                <button type="button" class="btn-outlined btn-full">
+                    Se connecter
+                </button>
+            </a>
+
+        </div>
+    </form>
+</div>
+
+<style>
+    .helper-text {
+        font-size: 0.8em;
+        color: var(--text-default-grey);
+    }
+</style>
+
+
+
+{% endblock %}

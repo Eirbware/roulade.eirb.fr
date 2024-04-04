@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pymongo
+jose
+bcrypt==4.0.1
+passlib[bcrypt]
+python-jose[cryptography]
+jinja2
+python-multipart
+requests

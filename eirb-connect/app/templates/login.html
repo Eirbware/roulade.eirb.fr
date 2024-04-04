@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <form method="POST" action="/login/{{encrypted_service}}" class="form">
+
+        <div class="form-group">
+
+            <div>
+
+                <h1>Se connecter avec le CAS</h1>
+
+                <p>
+                    Le CAS est la solution proposée par Bordeaux INP pour se connecter à l’ensemble des sites
+                    pédagogiques.
+                </p>
+            </div>
+
+            <button onclick="window.location.href='/auth/{{encrypted_service}}'" class="btn-cas">
+                <img src="{{url_for('static', path='img/bordeaux_inp_white.svg')}}" alt="bx_inp_logo" class="logo">
+                <p>
+                    S'identifier avec <br>le <b>CAS</b>
+                </p>
+            </button>
+        </div>
+
+        <hr class="hr-text" data-content="ou">
+
+
+        <div class="form-group">
+
+            <h1>Se connecter avec un mot de passe</h1>
+
+            <div class="input-group">
+
+                <label for="cas_id">Identifiant CAS :</label>
+                <input type="text" id="cas_id" name="cas_id" required><br><br>
+
+                <label for="password">Mot de passe EirbConnect :</label>
+                <input type="password" id="password" name="password" required><br><br>
+
+            </div>
+
+
+            {% if error %}
+            <div class="error">
+                <p>{{error}}</p>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-full">Se connecter</button>
+        </div>
+
+        <hr>
+        <div class="form-group">
+
+            <h1>Vous n’avez pas de compte ?</h1>
+
+            <a href="/register">
+                <button type="button" class="btn-outlined btn-full">
+                    Créer un compte
+                </button>
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+
+{% endblock %}

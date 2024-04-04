@@ -1,0 +1,242 @@
+:root {
+    --background-plain-grey: #fafafa;
+    --background-contrast-grey: #eeeeee;
+    --background-contrast-grey-hover: #e0e0e0;
+    --border-plain-grey: #3a3a3a;
+    --text-default-grey: #666666;
+    --text-inverted: #fff;
+    --background-main: #ffcc00;
+    --background-main-hover: #ffbb00;
+    --text-error: #f44336;
+}
+
+html {
+    box-sizing: border-box;
+    font-family: "Outfit", sans-serif;
+}
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    flex: 1;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    padding-block: 2em;
+    padding-inline: 3rem;
+    background-color: var(--background-plain-grey);
+    min-width: 35rem;
+    max-width: 45rem;
+    border-radius: 0.25rem;
+}
+
+.form p {
+    color: var(--text-default-grey);
+    margin: 0;
+}
+
+.form h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.75rem;
+    margin: 0;
+}
+
+.form h2 {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.form .form-title {
+    margin-bottom: 1em;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.infos-group h2 {
+    margin: 0;
+    color: var(--text-default-grey);
+}
+
+.infos-group ul {
+    margin-top: 0;
+    padding-inline-start: 2rem;
+    color: var(--text-default-grey);
+    font-size: 0.9rem;
+}
+
+input {
+    background-color: var(--background-contrast-grey);
+    border-radius: 0.25rem 0.25rem 0 0;
+    box-shadow: inset 0 -2px 0 0 var(--border-plain-grey);
+    color: var(--text-default-grey);
+    font-size: 1rem;
+    border: none;
+    line-height: 1.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover {
+    background-color: var(--background-contrast-grey-hover);
+}
+
+input[type="text"]:focus-visible,
+input[type="password"]:focus-visible {
+    background-color: var(--background-contrast-grey-hover);
+    outline: none;
+    box-shadow: inset 0 -2px 0 0 var(--background-main-hover);
+}
+
+button {
+    color: var(--text-inverted);
+    background-color: var(--background-main);
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    width: -moz-fit-content;
+    width: fit-content;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-cas {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    line-height: 1rem;
+    background-color: var(--background-main-hover);
+}
+
+.btn-cas p {
+    color: var(--text-inverted);
+}
+
+.btn-cas:hover {
+    background-color: var(--background-main);
+}
+
+.btn-cas p {
+    text-align: left;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.btn-cas img {
+    height: 2rem;
+    margin: 0.5rem;
+}
+
+.btn-outlined {
+    color: var(--background-main);
+    background-color: transparent;
+    border: 1px solid var(--background-main);
+}
+
+button:hover {
+    cursor: pointer;
+    color: var(--text-inverted);
+    background-color: var(--background-main-hover);
+}
+
+hr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-top: 1px solid var(--background-contrast-grey);
+    color: var(--border-plain-grey);
+    font-weight: 600;
+    overflow: visible;
+    text-align: center;
+    height: 5px;
+    width: 100%;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.hr-text::after {
+    background: var(--background-plain-grey);
+    content: attr(data-content);
+    position: sticky;
+    padding-inline: 1em;
+    padding-bottom: 8px;
+}
+
+.error {
+    display: flex;
+    flex-direction: column;
+    border: 0.1em solid var(--text-error);
+    border-radius: 0.25rem;
+}
+
+.error::before {
+    content: "Erreur";
+    font-weight: 600;
+    color: var(--text-inverted);
+    padding: 0.5em 1em;
+    background-color: var(--text-error);
+}
+
+.error p {
+    color: var(--border-plain-grey);
+    padding: 1em;
+    font-weight: 600;
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-width: 320px) and (max-width: 600px) {
+    .form {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        padding: 1em;
+    }
+
+    .form-container {
+        padding: 0;
+    }
+}

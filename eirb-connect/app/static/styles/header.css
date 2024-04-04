@@ -1,0 +1,31 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1em;
+    width: 100%;
+    box-shadow: 0 0 10px var(--background-contrast-grey);
+    background-color: #fff;
+    padding: 2em;
+}
+
+.header__logo {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    cursor: pointer;
+}
+
+.header__logo img {
+    display: flex;
+}
+
+.header__logo h1 {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .header {
+        justify-content: center;
+    }
+}

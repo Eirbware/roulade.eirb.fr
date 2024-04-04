@@ -1,0 +1,39 @@
+version: "3"
+services:
+    eirb_connect:
+        build: ./eirb-connect
+        ports:
+            - "8080:8080"
+        depends_on:
+            - mongodb
+        networks:
+            - mongo
+        environment:
+            MONGO_URI: "roulade_admin:LaSécuritéC1p0rtant!@mongodb:27017"
+
+    mongodb:
+        image: mongo
+        container_name: roulade-mongodb
+        ports:
+            - "27018:27017"
+        command: mongod --auth
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: "roulade_admin"
+            MONGO_INITDB_ROOT_PASSWORD: "LaSécuritéC1p0rtant!"
+            MONGO_INITDB_DATABASE: AssosConnect
+            MONGODB_DATA_DIR: /data/db
+            MONDODB_LOG_DIR: /dev/null
+        networks:
+            - mongo
+        expose:
+            - 27018
+        volumes:
+            - mongodbdata:/data/db
+
+networks:
+    mongo:
+        driver: bridge
+
+volumes:
+    mongodbdata:
+        driver: local
