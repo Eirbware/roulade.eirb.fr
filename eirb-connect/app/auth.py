@@ -45,7 +45,7 @@ class Payload(BaseModel):
     token: str
 
 
-# Helper password functions
+# Helper password functions²
 
 def verify_password(plain_password, hashed_password):
     """
@@ -97,7 +97,6 @@ def get_cas_user_from_ticket(ticket: str, service_url: str) -> CasUser | None:
     """
     Return the user from the CAS ticket
     """
-
     res = requests.get(
         f"https://cas.bordeaux-inp.fr/serviceValidate?service={service_url}&ticket={ticket}&format=json", timeout=5).json()
 
@@ -112,9 +111,11 @@ def get_cas_user_from_ticket(ticket: str, service_url: str) -> CasUser | None:
             "profil": user_response["attributes"]["profil"][0],
             "nom_complet": user_response["attributes"]["nom_complet"][0],
             "ecole": user_response["attributes"]["ecole"][0],
-            "diplome": user_response["attributes"]["diplome"][0]
+            "diplome": user_response["attributes"]["diplome"][0],
+            "supannEtuAnneeInscription": user_response["attributes"]["supannEtuAnneeInscription"][0]
         }))
         return user
+    
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -127,6 +128,8 @@ def update_user(cas_user: CasUser):
     Update the user in the db
     """
     cas_user_dict = cas_user.model_dump()
+
+    print(cas_user_dict)
 
     mongo_user = mongodb.utilisateurs.find_one({"user": cas_user_dict["user"]})
 
@@ -224,7 +227,8 @@ def register_user(cas_user: CasUser, email_personnel: str, password: str):
             "profil": cas_user.attributes.profil,
             "nom_complet": cas_user.attributes.nom_complet,
             "ecole": cas_user.attributes.ecole,
-            "diplome": cas_user.attributes.diplome
+            "diplome": cas_user.attributes.diplome,
+            "supannEtuAnneeInscription": cas_user.attributes.supannEtuAnneeInscription
         },
         "password": hashed_password,
         "roles": []

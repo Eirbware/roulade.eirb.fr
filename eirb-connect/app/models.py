@@ -16,6 +16,7 @@ class CasUserAttributes(BaseModel):
     nom_complet: str
     ecole: str
     diplome: str
+    supannEtuAnneeInscription: str
 
 
 class CasUser(BaseModel):
@@ -37,6 +38,7 @@ class UserAttributes(BaseModel):
     profil: str
     nom_complet: str
     ecole: str
+    supannEtuAnneeInscription: str
     diplome: str
 
 

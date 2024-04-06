@@ -129,9 +129,9 @@ async def auth_login(encrypted_service: str, ticket: str):
 
     if not user and eirb_service_url:
         # Si l'utilisateur n'existe pas, on redirige vers la page d'inscription
-        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.dict())}&eirb_service_url={encrypted_service}")
+        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.model_dump())}&eirb_service_url={encrypted_service}")
     elif not user:
-        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.dict())}")
+        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.model_dump())}")
 
     # Si l'utilisateur existe, on met a jour ses attributs "cas"
     update_user(cas_user)
@@ -224,8 +224,11 @@ async def register(
     # Si le token est présent, on vérifie qu'il est valide
     cas_user = get_user_from_token(token)
 
+    print(cas_user)
+
     return templates.TemplateResponse(
-        request=request, name="register.html", context={
+        name="register.html", context={
+            "request": request,
             "cas_user": cas_user,
             "token": token,
             "encrypted_service": encrypted_service,
