@@ -8,6 +8,7 @@ services:
             - mongodb
         networks:
             - mongo
+            - eirbConnect
         environment:
             MONGO_URI: "roulade_admin:LaSécuritéC1p0rtant!@mongodb:27017"
 
@@ -33,6 +34,8 @@ services:
 networks:
     mongo:
         driver: bridge
+    eirbConnect:
+        name: eirb_connect
 
 volumes:
     mongodbdata:
