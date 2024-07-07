@@ -12,7 +12,7 @@ import pymongo
 dotenv_path = Path(os.path.dirname(os.path.abspath(__file__))) / '.env'
 load_dotenv(dotenv_path=dotenv_path)
 
-APP_URL = os.getenv('APP_URL', "http://127.0.0.1:8000")
+APP_URL = os.getenv('APP_URL', "http://127.0.0.1:8080")
 CAS_SERVICE_URL = os.getenv(
     'CAS_SERVICE_URL', "https://cas.serveur-bde.eirb.fr/login")
 
