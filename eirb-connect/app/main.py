@@ -129,7 +129,8 @@ async def auth_login(encrypted_service: str, ticket: str):
 
     if not user and eirb_service_url:
         # Si l'utilisateur n'existe pas, on redirige vers la page d'inscription
-        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.model_dump())}&eirb_service_url={encrypted_service}")
+        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.model_dump())}&eirb_service_url={eirb_service_url}")
+
     elif not user:
         return RedirectResponse(url=f"/register?token={create_access_token(cas_user.model_dump())}")
 
