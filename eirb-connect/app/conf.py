@@ -61,3 +61,5 @@ if not mongodb.services.find_one({"service_url": "EirbConnect"}):
         "service_url": "EirbConnect",
         "hash": hashlib.md5(APP_URL.encode()).hexdigest()
     })
+
+print(config_disp())
