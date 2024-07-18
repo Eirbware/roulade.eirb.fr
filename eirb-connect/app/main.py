@@ -44,7 +44,6 @@ async def root(request: Request):
     """
     Page de présentation
     """
-    print(f"APP_URL: {APP_URL}")
     return templates.TemplateResponse(
         name="index.html",
         context={
@@ -224,8 +223,6 @@ async def register(
 
     # Si le token est présent, on vérifie qu'il est valide
     cas_user = get_user_from_token(token)
-
-    print(cas_user)
 
     return templates.TemplateResponse(
         name="register.html", context={

@@ -129,8 +129,6 @@ def update_user(cas_user: CasUser):
     """
     cas_user_dict = cas_user.model_dump()
 
-    print(cas_user_dict)
-
     mongo_user = mongodb.utilisateurs.find_one({"user": cas_user_dict["user"]})
 
     if mongo_user:
