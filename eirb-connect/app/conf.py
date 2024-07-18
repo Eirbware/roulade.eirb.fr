@@ -33,6 +33,16 @@ ACCES_TOKEN_EXPIRE_MINUTES = int(
 # encryption algorithm
 ALGORITHM = os.getenv('ALGORITHM', 'HS256')
 
+def config_disp():
+    return f"""Config :
+APP_URL={APP_URL}
+CAS_SERVICE_URL={CAS_SERVICE_URL}
+CAS_PROXY={CAS_PROXY}
+host={host}
+SECRET_KEY={SECRET_KEY}
+ACCESS_TOKEN_EXPIRE_MINUTES={ACCES_TOKEN_EXPIRE_MINUTES}
+ALGORITHM={ALGORITHM}
+"""
 
 def create_collections(collection_list):
     """
