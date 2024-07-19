@@ -2,6 +2,7 @@
 EirbConnect : Service d'authentification des étudiants de l'ENSEIRB-MATMECA
 This is the main file of the application.
 """
+
 from pathlib import Path
 
 from fastapi import FastAPI, Request, HTTPException, Form
@@ -12,23 +13,29 @@ from fastapi.staticfiles import StaticFiles
 
 from app.conf import APP_URL, CAS_PROXY, CAS_SERVICE_URL
 from app.utils import encrypt_service, resolve_service_url, encode_base64
-from app.auth import (register_user, get_user, get_cas_user_from_ticket,
-                      get_user_from_token, get_user_data, get_user_data_from_token,
-                      update_user, create_access_token,
-                      get_user_with_id_and_password)
+from app.auth import (
+    register_user,
+    get_user,
+    get_cas_user_from_ticket,
+    get_user_from_token,
+    get_user_data,
+    get_user_data_from_token,
+    update_user,
+    create_access_token,
+    get_user_with_id_and_password,
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 
 
 app = FastAPI()
 app.mount(
-    "/static", StaticFiles(directory=str(Path(BASE_DIR, 'static'))), name="static")
+    "/static", StaticFiles(directory=str(Path(BASE_DIR, "static"))), name="static"
+)
 
-templates = Jinja2Templates(directory=str(Path(BASE_DIR, 'templates')))
+templates = Jinja2Templates(directory=str(Path(BASE_DIR, "templates")))
 
-origins = [
-    APP_URL
-]
+origins = [APP_URL]
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,11 +55,11 @@ async def root(request: Request):
         name="index.html",
         context={
             "request": request,
-        }
+        },
     )
 
 
-@app.get('/favicon.ico', include_in_schema=False)
+@app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
     """
     Endpoint pour le favicon
@@ -60,13 +67,13 @@ async def favicon():
     headers = {
         "Content-Security-Policy": f"default-src 'self' {APP_URL}",
     }
-    return FileResponse(str(Path(BASE_DIR, 'static', 'favicon.ico')), headers=headers)
+    return FileResponse(str(Path(BASE_DIR, "static", "favicon.ico")), headers=headers)
 
 
 @app.get("/auth")
 async def auth(eirb_service_url: str = "EirbConnect"):
     """
-    Endpoint pour authentication uniquement avec le cas 
+    Endpoint pour authentication uniquement avec le cas
     (redirection transparente pour l'utilisateur)
 
     Args:
@@ -116,13 +123,12 @@ async def auth_login(encrypted_service: str, ticket: str):
     redirect_url = f"{APP_URL}/auth/{encrypted_service}/login"
     service_url = redirect_url
     if CAS_PROXY != "":
-        service_url = f"{CAS_PROXY}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr"
+        service_url = (
+            f"{CAS_PROXY}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr"
+        )
 
     # On récupère l'utilisateur CAS depuis le ticket
-    cas_user = get_cas_user_from_ticket(
-        ticket,
-        service_url
-    )
+    cas_user = get_cas_user_from_ticket(ticket, service_url)
 
     if not cas_user:
         return HTTPException(status_code=403, detail="Invalid ticket")
@@ -134,10 +140,14 @@ async def auth_login(encrypted_service: str, ticket: str):
 
     if not user and eirb_service_url:
         # Si l'utilisateur n'existe pas, on redirige vers la page d'inscription
-        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.model_dump())}&eirb_service_url={eirb_service_url}")
+        return RedirectResponse(
+            url=f"/register?token={create_access_token(cas_user.model_dump())}&eirb_service_url={eirb_service_url}"
+        )
 
     elif not user:
-        return RedirectResponse(url=f"/register?token={create_access_token(cas_user.model_dump())}")
+        return RedirectResponse(
+            url=f"/register?token={create_access_token(cas_user.model_dump())}"
+        )
 
     # Si l'utilisateur existe, on met a jour ses attributs "cas"
     update_user(cas_user)
@@ -148,7 +158,9 @@ async def auth_login(encrypted_service: str, ticket: str):
         return HTTPException(status_code=404, detail="User not found")
 
     if eirb_service_url:
-        return RedirectResponse(url=f"{eirb_service_url}?token={create_access_token(user_data)}")
+        return RedirectResponse(
+            url=f"{eirb_service_url}?token={create_access_token(user_data)}"
+        )
 
     return user_data
 
@@ -168,14 +180,17 @@ async def login(request: Request, eirb_service_url: str = "EirbConnect"):
         context={
             "request": request,
             "encrypted_service": encrypted_service,
-        }
+        },
     )
 
 
 @app.post("/login/{encrypted_service}")
 async def login_post(
-        request: Request, encrypted_service: str,
-        cas_id: str = Form(...), password: str = Form(...)):
+    request: Request,
+    encrypted_service: str,
+    cas_id: str = Form(...),
+    password: str = Form(...),
+):
     """
     Route qui s'exécute après l'envoi du formulaire de login et qui authentifie l'utilisateur
     """
@@ -190,13 +205,13 @@ async def login_post(
                 "request": request,
                 "encrypted_service": encrypted_service,
                 "error": "Identifiant ou mot de passe incorrect",
-            }
+            },
         )
 
     if eirb_service_url:
         return RedirectResponse(
             url=f"{eirb_service_url}?token={create_access_token(user.model_dump())}",
-            status_code=303
+            status_code=303,
         )
 
     return user
@@ -212,8 +227,8 @@ async def logout():
 
 @app.get("/register")
 async def register(
-        request: Request, eirb_service_url: str = "EirbConnect",
-        token: str | None = None):
+    request: Request, eirb_service_url: str = "EirbConnect", token: str | None = None
+):
     """
     Page d'inscription
     """
@@ -231,19 +246,23 @@ async def register(
     cas_user = get_user_from_token(token)
 
     return templates.TemplateResponse(
-        name="register.html", context={
+        name="register.html",
+        context={
             "request": request,
             "cas_user": cas_user,
             "token": token,
             "encrypted_service": encrypted_service,
-        }
+        },
     )
 
 
 @app.post("/register/{encrypted_service}/{token}")
 async def register_post(
-        token: str, encrypted_service: str,
-        email: str = Form(...), password: str = Form(...)):
+    token: str,
+    encrypted_service: str,
+    email: str = Form(...),
+    password: str = Form(...),
+):
     """
     Route qui s'exécute après l'envoi du formulaire de login et qui enregistre l'utilisateur
     """
@@ -256,8 +275,7 @@ async def register_post(
     if not cas_user:
         return HTTPException(status_code=403, detail="Invalid token")
 
-    register_user(
-        cas_user, email, password)
+    register_user(cas_user, email, password)
 
     user = get_user_data(cas_user.user)
 
@@ -265,7 +283,9 @@ async def register_post(
         return HTTPException(status_code=404, detail="User not found")
 
     if eirb_service_url:
-        return RedirectResponse(url=f"{eirb_service_url}?token={create_access_token(user)}")
+        return RedirectResponse(
+            url=f"{eirb_service_url}?token={create_access_token(user)}"
+        )
 
     return user
 

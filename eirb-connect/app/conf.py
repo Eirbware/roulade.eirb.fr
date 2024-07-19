@@ -9,17 +9,16 @@ from dotenv import load_dotenv
 import pymongo
 
 # Load environment variables from .env file
-dotenv_path = Path(os.path.dirname(os.path.abspath(__file__))) / '.env'
+dotenv_path = Path(os.path.dirname(os.path.abspath(__file__))) / ".env"
 load_dotenv(dotenv_path=dotenv_path)
 
-APP_URL = os.getenv('APP_URL', "http://127.0.0.1:8080")
-CAS_SERVICE_URL = os.getenv(
-    'CAS_SERVICE_URL', "https://cas.bordeaux-inp.fr/")
+APP_URL = os.getenv("APP_URL", "http://127.0.0.1:8080")
+CAS_SERVICE_URL = os.getenv("CAS_SERVICE_URL", "https://cas.bordeaux-inp.fr/")
 
-CAS_PROXY = os.getenv('CAS_PROXY', "")
+CAS_PROXY = os.getenv("CAS_PROXY", "")
 
 
-host = os.getenv('MONGO_URI', 'localhost:27017')
+host = os.getenv("MONGO_URI", "localhost:27017")
 client: pymongo.MongoClient = pymongo.MongoClient(host=f"mongodb://{host}")
 mongodb = client.AssosConnect
 
@@ -28,12 +27,12 @@ mongodb = client.AssosConnect
 # openssl rand -hex 32
 # Copy the output and paste it in the .env file as SECRET_KEY variable
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'very_secret_key')
-ACCES_TOKEN_EXPIRE_MINUTES = int(
-    os.getenv('ACCES_TOKEN_EXPIRE_MINUTES', '30'))
+SECRET_KEY = os.getenv("SECRET_KEY", "very_secret_key")
+ACCES_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCES_TOKEN_EXPIRE_MINUTES", "30"))
 
 # encryption algorithm
-ALGORITHM = os.getenv('ALGORITHM', 'HS256')
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+
 
 def config_disp():
     return f"""Config :
@@ -45,6 +44,7 @@ SECRET_KEY={SECRET_KEY}
 ACCESS_TOKEN_EXPIRE_MINUTES={ACCES_TOKEN_EXPIRE_MINUTES}
 ALGORITHM={ALGORITHM}
 """
+
 
 def create_collections(collection_list):
     """
@@ -59,9 +59,11 @@ create_collections(["utilisateurs", "services", "roles", "assos"])
 
 # We insert the EirbConnect service
 if not mongodb.services.find_one({"service_url": "EirbConnect"}):
-    mongodb.services.insert_one({
-        "service_url": "EirbConnect",
-        "hash": hashlib.md5(APP_URL.encode()).hexdigest()
-    })
+    mongodb.services.insert_one(
+        {
+            "service_url": "EirbConnect",
+            "hash": hashlib.md5(APP_URL.encode()).hexdigest(),
+        }
+    )
 
 print(config_disp())

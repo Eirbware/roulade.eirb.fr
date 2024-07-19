@@ -9,6 +9,7 @@ class CasUserAttributes(BaseModel):
     """
     UserAttributes model
     """
+
     nom: str
     prenom: str
     courriel: str
@@ -23,6 +24,7 @@ class CasUser(BaseModel):
     """
     User model
     """
+
     user: str
     attributes: CasUserAttributes
 
@@ -31,6 +33,7 @@ class UserAttributes(BaseModel):
     """
     UserAttributes model
     """
+
     nom: str
     prenom: str
     courriel: str
@@ -46,6 +49,7 @@ class Role(BaseModel):
     """
     Role model
     """
+
     nom_asso: str
     mandat: str
     postes: list[str]
@@ -55,6 +59,7 @@ class User(BaseModel):
     """
     User model
     """
+
     user: str
     attributes: UserAttributes
     password: str

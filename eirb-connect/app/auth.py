@@ -32,6 +32,7 @@ class Token(BaseModel):
     """
     Token model
     """
+
     access_token: str
     token_type: str
 
@@ -40,12 +41,14 @@ class Payload(BaseModel):
     """
     Payload model
     """
+
     status: str
     payload: dict
     token: str
 
 
 # Helper password functions²
+
 
 def verify_password(plain_password, hashed_password):
     """
@@ -59,6 +62,7 @@ def get_password_hash(password):
     Helper function to generate a hashed password
     """
     return pwd_context.hash(password)
+
 
 # Helper token functions
 
@@ -98,28 +102,36 @@ def get_cas_user_from_ticket(ticket: str, service_url: str) -> CasUser | None:
     Return the user from the CAS ticket
     """
     res = requests.get(
-        f"https://cas.bordeaux-inp.fr/serviceValidate?service={service_url}&ticket={ticket}&format=json", timeout=5).json()
+        f"https://cas.bordeaux-inp.fr/serviceValidate?service={service_url}&ticket={ticket}&format=json",
+        timeout=5,
+    ).json()
 
     if "authenticationSuccess" in res["serviceResponse"]:
         user_response = res["serviceResponse"]["authenticationSuccess"]
 
-        user = CasUser(user=user_response["user"], attributes=CasUserAttributes(**{
-            "nom": user_response["attributes"]["nom"][0],
-            "prenom": user_response["attributes"]["prenom"][0],
-            "courriel": user_response["attributes"]["courriel"][0],
-            "email_personnel": "",
-            "profil": user_response["attributes"]["profil"][0],
-            "nom_complet": user_response["attributes"]["nom_complet"][0],
-            "ecole": user_response["attributes"]["ecole"][0],
-            "diplome": user_response["attributes"]["diplome"][0],
-            "supannEtuAnneeInscription": user_response["attributes"]["supannEtuAnneeInscription"][0]
-        }))
+        user = CasUser(
+            user=user_response["user"],
+            attributes=CasUserAttributes(
+                **{
+                    "nom": user_response["attributes"]["nom"][0],
+                    "prenom": user_response["attributes"]["prenom"][0],
+                    "courriel": user_response["attributes"]["courriel"][0],
+                    "email_personnel": "",
+                    "profil": user_response["attributes"]["profil"][0],
+                    "nom_complet": user_response["attributes"]["nom_complet"][0],
+                    "ecole": user_response["attributes"]["ecole"][0],
+                    "diplome": user_response["attributes"]["diplome"][0],
+                    "supannEtuAnneeInscription": user_response["attributes"][
+                        "supannEtuAnneeInscription"
+                    ][0],
+                }
+            ),
+        )
         return user
-    
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail=res['serviceResponse']['authenticationFailure'],
+        detail=res["serviceResponse"]["authenticationFailure"],
     )
 
 
@@ -135,8 +147,10 @@ def update_user(cas_user: CasUser):
         # On met a jour tous les attributs "cas" de l'utilisateur
         for key in cas_user_dict["attributes"]:
             mongo_user["attributes"][key] = cas_user_dict["attributes"][key]
-        mongodb.utilisateurs.update_one({"user": cas_user_dict["user"]}, {
-            "$set": {"attributes": mongo_user["attributes"]}})
+        mongodb.utilisateurs.update_one(
+            {"user": cas_user_dict["user"]},
+            {"$set": {"attributes": mongo_user["attributes"]}},
+        )
         return
 
     raise HTTPException(
@@ -187,9 +201,7 @@ def get_user_data_from_token(token: str) -> dict:
     Get EirbConnect user's data with a token
     """
     payload = verify_token(token)
-    return {
-        key: payload.payload[key] for key in payload.payload if key != "password"
-    }
+    return {key: payload.payload[key] for key in payload.payload if key != "password"}
 
 
 def get_user_from_token(token: str) -> CasUser | None:
@@ -215,22 +227,24 @@ def register_user(cas_user: CasUser, email_personnel: str, password: str):
 
     # insert the user in the db
 
-    mongodb.utilisateurs.insert_one({
-        "user": cas_user.user,
-        "attributes": {
-            "nom": cas_user.attributes.nom,
-            "prenom": cas_user.attributes.prenom,
-            "courriel": cas_user.attributes.courriel,
-            "email_personnel": email_personnel,
-            "profil": cas_user.attributes.profil,
-            "nom_complet": cas_user.attributes.nom_complet,
-            "ecole": cas_user.attributes.ecole,
-            "diplome": cas_user.attributes.diplome,
-            "supannEtuAnneeInscription": cas_user.attributes.supannEtuAnneeInscription
-        },
-        "password": hashed_password,
-        "roles": []
-    })
+    mongodb.utilisateurs.insert_one(
+        {
+            "user": cas_user.user,
+            "attributes": {
+                "nom": cas_user.attributes.nom,
+                "prenom": cas_user.attributes.prenom,
+                "courriel": cas_user.attributes.courriel,
+                "email_personnel": email_personnel,
+                "profil": cas_user.attributes.profil,
+                "nom_complet": cas_user.attributes.nom_complet,
+                "ecole": cas_user.attributes.ecole,
+                "diplome": cas_user.attributes.diplome,
+                "supannEtuAnneeInscription": cas_user.attributes.supannEtuAnneeInscription,
+            },
+            "password": hashed_password,
+            "roles": [],
+        }
+    )
 
     return mongodb.utilisateurs.find_one({"user": cas_user.user})
 
@@ -249,17 +263,19 @@ def login_user_with_password(cas_id: str, password: str):
         return None, None
 
     # generate the token
-    token = create_access_token({
-        "user": cas_id,
-        "nom": user.attributes.nom,
-        "prenom": user.attributes.prenom,
-        "courriel": user.attributes.courriel,
-        "email_personnel": user.attributes.email_personnel,
-        "profil": user.attributes.profil,
-        "nom_complet": user.attributes.nom_complet,
-        "ecole": user.attributes.ecole,
-        "diplome": user.attributes.diplome
-    })
+    token = create_access_token(
+        {
+            "user": cas_id,
+            "nom": user.attributes.nom,
+            "prenom": user.attributes.prenom,
+            "courriel": user.attributes.courriel,
+            "email_personnel": user.attributes.email_personnel,
+            "profil": user.attributes.profil,
+            "nom_complet": user.attributes.nom_complet,
+            "ecole": user.attributes.ecole,
+            "diplome": user.attributes.diplome,
+        }
+    )
 
     # return the token
     return token, user
