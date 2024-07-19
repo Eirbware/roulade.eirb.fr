@@ -14,7 +14,9 @@ load_dotenv(dotenv_path=dotenv_path)
 
 APP_URL = os.getenv('APP_URL', "http://127.0.0.1:8080")
 CAS_SERVICE_URL = os.getenv(
-    'CAS_SERVICE_URL', "https://cas.serveur-bde.eirb.fr/login")
+    'CAS_SERVICE_URL', "https://cas.bordeaux-inp.fr/")
+
+CAS_PROXY = os.getenv('CAS_PROXY', "")
 
 
 host = os.getenv('MONGO_URI', 'localhost:27017')

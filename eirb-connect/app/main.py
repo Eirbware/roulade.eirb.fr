@@ -10,7 +10,7 @@ from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
-from app.conf import APP_URL, CAS_SERVICE_URL
+from app.conf import APP_URL, CAS_PROXY, CAS_SERVICE_URL
 from app.utils import encrypt_service, resolve_service_url, encode_base64
 from app.auth import (register_user, get_user, get_cas_user_from_ticket,
                       get_user_from_token, get_user_data, get_user_data_from_token,
@@ -82,10 +82,12 @@ async def auth(eirb_service_url: str = "EirbConnect"):
         return HTTPException(status_code=403, detail="Service not whitelisted")
 
     redirect_url = f"{APP_URL}/auth/{encrypted_service}/login"
+    service_url = redirect_url
 
-    service_url = f"{CAS_SERVICE_URL}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr"
+    if CAS_PROXY != "":
+        service_url = f"{CAS_PROXY}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr&serviceUrl={redirect_url}"
 
-    authentication_cas_url = f"https://cas.bordeaux-inp.fr/?service={service_url}&serviceUrl={redirect_url}"
+    authentication_cas_url = f"{CAS_SERVICE_URL}/?service={service_url}"
 
     return RedirectResponse(url=authentication_cas_url)
 
@@ -97,9 +99,11 @@ async def auth_redirect(encrypted_service: str):
     """
     redirect_url = f"{APP_URL}/auth/{encrypted_service}/login"
 
-    service_url = f"{CAS_SERVICE_URL}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr"
+    service_url = redirect_url
+    if CAS_PROXY != "":
+        service_url = f"{CAS_PROXY}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr&serviceUrl={redirect_url}"
 
-    authentication_cas_url = f"https://cas.bordeaux-inp.fr/?service={service_url}&serviceUrl={redirect_url}"
+    authentication_cas_url = f"{CAS_SERVICE_URL}/?service={service_url}"
 
     return RedirectResponse(url=authentication_cas_url)
 
@@ -111,7 +115,9 @@ async def auth_login(encrypted_service: str, ticket: str):
     """
 
     redirect_url = f"{APP_URL}/auth/{encrypted_service}/login"
-    service_url = f"{CAS_SERVICE_URL}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr"
+    service_url = redirect_url
+    if CAS_PROXY != "":
+        service_url = f"{CAS_PROXY}/login?token={encode_base64(redirect_url)}@bordeaux-inp.fr"
 
     # On récupère l'utilisateur CAS depuis le ticket
     cas_user = get_cas_user_from_ticket(
@@ -202,7 +208,7 @@ async def logout():
     """
     Page de logout
     """
-    return RedirectResponse(url="https://cas.bordeaux-inp.fr/logout")
+    return RedirectResponse(url=f"{CAS_SERVICE_URL}/logout")
 
 
 @app.get("/register")
