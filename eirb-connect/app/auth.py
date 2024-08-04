@@ -45,7 +45,9 @@ class Payload(BaseModel):
     payload: dict
     token: str
 
+
 # Helper token functions
+
 
 def create_access_token(data: dict):
     """

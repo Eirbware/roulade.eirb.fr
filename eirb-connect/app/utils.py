@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 # Helper password functions
 def verify_password(plain_password, hashed_password):
     """
@@ -21,6 +22,7 @@ def get_password_hash(password):
     Helper function to generate a hashed password
     """
     return pwd_context.hash(password)
+
 
 def encrypt_service(service_url: str) -> str | None:
     """
