@@ -15,6 +15,9 @@ load_dotenv(dotenv_path=dotenv_path)
 APP_URL = os.getenv("APP_URL", "http://127.0.0.1:8080")
 CAS_SERVICE_URL = os.getenv("CAS_SERVICE_URL", "https://cas.bordeaux-inp.fr/")
 
+DEFAULT_ADMIN_PASS = "admin"
+ADMIN_PASS = os.getenv("ADMIN_PASS", DEFAULT_ADMIN_PASS)
+
 CAS_PROXY = os.getenv("CAS_PROXY", "")
 
 
@@ -43,6 +46,7 @@ host={host}
 SECRET_KEY={SECRET_KEY}
 ACCESS_TOKEN_EXPIRE_MINUTES={ACCES_TOKEN_EXPIRE_MINUTES}
 ALGORITHM={ALGORITHM}
+ADMIN_PASS={ADMIN_PASS}
 """
 
 
@@ -63,6 +67,32 @@ if not mongodb.services.find_one({"service_url": "EirbConnect"}):
         {
             "service_url": "EirbConnect",
             "hash": hashlib.md5(APP_URL.encode()).hexdigest(),
+        }
+    )
+
+from app.utils import get_password_hash
+
+# Create an account for eirbware, used as an admin account for other services
+# To prevent security issues, the admin password musn't be the default one
+if ADMIN_PASS != DEFAULT_ADMIN_PASS and not mongodb.utilisateurs.find_one(
+    {"utilisateurs": "eirbware"}
+):
+    mongodb.utilisateurs.insert_one(
+        {
+            "user": "eirbware",
+            "attributes": {
+                "nom": "",
+                "prenom": "Eirbware",
+                "courriel": "eirbware@enseirb-matmeca.fr",
+                "email_personnel": "eirbware@enseirb-matmeca.fr",
+                "profil": "asso",
+                "nom_complet": "Eirbware",
+                "ecole": "enseirb-matmeca",
+                "diplome": "",
+                "supannEtuAnneeInscription": "2024",
+            },
+            "password": get_password_hash(ADMIN_PASS),
+            "roles": [],
         }
     )
 
