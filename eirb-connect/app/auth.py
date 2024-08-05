@@ -5,11 +5,11 @@ This module contains the authentication logic
 from datetime import datetime, timedelta
 from typing import Annotated
 
+from app.utils import get_password_hash, verify_password
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
 
 import requests
@@ -21,7 +21,6 @@ from bson.objectid import ObjectId
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 # Pydantic Model that will be used in the
@@ -45,23 +44,6 @@ class Payload(BaseModel):
     status: str
     payload: dict
     token: str
-
-
-# Helper password functions²
-
-
-def verify_password(plain_password, hashed_password):
-    """
-    Helper function to check if a password matches a hashed password
-    """
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    """
-    Helper function to generate a hashed password
-    """
-    return pwd_context.hash(password)
 
 
 # Helper token functions
