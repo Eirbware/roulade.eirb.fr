@@ -274,6 +274,11 @@
         "logo": "logos/x256/paleirb.png"
     },
     {
+        "name": "Petits Paniers Campus (PPC)",
+        "links": ["https://t.me/ppcenseirb"],
+        "logo": "logos/x256/ppc.png"
+    },
+    {
         "name": "Pet'eirb",
         "links": ["https://t.me/peteirb"],
         "logo": "logos/x256/peteirb.png"
